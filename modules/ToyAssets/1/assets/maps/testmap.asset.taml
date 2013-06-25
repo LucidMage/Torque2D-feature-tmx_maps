@@ -1,0 +1,35 @@
+<TmxMapAsset  
+	AssetName="testmap"  
+	MapFile="testtown_map.tmx">      
+	<TmxMapAsset.Layers>
+		<Layer Name="Tile Layer 1" Layer="30" Render="true" useObjects="true" ></Layer>  
+		<Layer Name="collision" Layer="29" Render="false" useObjects="true"></Layer>  
+	</TmxMapAsset.Layers>  
+		  
+	<TmxMapAsset.Tiles>  
+		<Tile Tag="WallCollision" >  
+			<SceneObject TamlId="1" BodyType="Static">                  
+				<SceneObject.CollisionShapes>  
+					<Polygon>  
+						<Point>-3.5 -0.5</Point>  
+						<Point>3.5 -0.5</Point>  
+						<Point>-3.5 0.5</Point>  
+						<Point>3.5 0.5</Point>  
+					</Polygon>  
+				</SceneObject.CollisionShapes>  
+			</SceneObject>  
+		</Tile>  
+		<Tile Tag="WaterCollision" >  
+			<SceneObject TamlId="1" BodyType="Static">                  
+				<SceneObject.CollisionShapes>  
+					<Polygon>  
+						<Point>-1.5 -0.5</Point>  
+						<Point>1.5 -0.5</Point>  
+						<Point>-1.5 0.5</Point>  
+						<Point>1.5 0.5</Point>  
+					</Polygon>  
+				</SceneObject.CollisionShapes>  
+			</SceneObject>  
+		</Tile>   
+	</TmxMapAsset.Tiles>    
+</TmxMapAsset>
