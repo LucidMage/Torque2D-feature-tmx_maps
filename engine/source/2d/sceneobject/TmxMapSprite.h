@@ -71,6 +71,7 @@ public:
 	Vector2 TileToCoord(Vector2& pos, Vector2& tileSize, Vector2& offset, bool isIso);
 	Vector2 getTileSize();
 	bool isIsoMap();
+	void setBodyType(const b2BodyType type);
 
 protected:
 	static bool setMap(void* obj, const char* data)                       { return static_cast<TmxMapSprite*>(obj)->setMap(data);}

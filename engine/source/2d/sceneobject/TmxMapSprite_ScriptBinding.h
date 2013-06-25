@@ -33,3 +33,8 @@ ConsoleMethod(TmxMapSprite, WorldCoordToTile, const char*, 3,3,"Convert a world 
 	auto tilePoint = object->CoordToTile(localPoint, object->getTileSize(), object->isIsoMap());
 	return tilePoint.scriptThis();
 }
+
+ConsoleMethod(TmxMapSprite, setMap, void, 3,3,"Set the map this MapSprite is to load.")
+{
+	object ->setMap(argv[2]);
+}

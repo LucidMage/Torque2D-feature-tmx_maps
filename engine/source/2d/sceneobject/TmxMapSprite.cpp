@@ -107,8 +107,6 @@ void TmxMapSprite::ClearMap()
 	}
 	mObjects.clear();
 }
-
-
 void TmxMapSprite::BuildMap()
 {
 	// Debug Profiling.
@@ -165,8 +163,8 @@ void TmxMapSprite::BuildMap()
 				F32 spriteHeight = static_cast<F32>( tset->GetTileHeight() );
 				F32 spriteWidth = static_cast<F32>( tset->GetTileWidth() );
 
-				F32 heightOffset = (spriteHeight - tileHeight) / 2;
-				F32 widthOffset = (spriteWidth - tileWidth) / 2;
+				F32 heightOffset = ((spriteHeight - tileHeight) / 2) - (width / 2);
+				F32 widthOffset = ((spriteWidth - tileWidth) / 2) - (height / 2);
 
 
 				Vector2 pos = TileToCoord( 
@@ -246,11 +244,16 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
 	F32 objectWidth = static_cast<F32>(tileSet->GetTileWidth());
 	F32 objectHeight = static_cast<F32>(tileSet->GetTileHeight());
-	F32 heightOffset =(objectHeight - tileHeight) / 2;
-	F32 widthOffset = (objectWidth - tileWidth) / 2;
+	//F32 heightOffset =(objectHeight - tileHeight) / 2;
+	//F32 widthOffset = (objectWidth - tileWidth) / 2;
 	F32 halfTileHeight = tileHeight * 0.5f;
+
 	F32 width = (mapParser->GetWidth() * tileWidth);
 	F32 height = (mapParser->GetHeight() * tileHeight);
+	
+	F32 heightOffset = ((objectHeight - tileHeight) / 2) - (width / 2);
+	F32 widthOffset = ((objectWidth - tileWidth) / 2) - (height / 2);
+
 	Vector2 tileSize(tileWidth, tileHeight);
 	F32 originY = height / 2 - halfTileHeight;
 	F32 originX = 0;
@@ -579,4 +582,22 @@ bool TmxMapSprite::isIsoMap(){
 	Tmx::Map* mapParser = mMapAsset->getParser();
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	return orient == Tmx::TMX_MO_ISOMETRIC;
+}
+
+void TmxMapSprite::setBodyType(const b2BodyType type){
+	Parent::setBodyType(type);
+
+	auto layerIdx = mLayers.begin();
+	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
+	{
+
+		(*layerIdx)->setBodyType(type);
+	}
+
+	auto objectsIdx = mObjects.begin();
+	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
+		(*objectsIdx)->setBodyType(type);
+	}
+
+
 }
