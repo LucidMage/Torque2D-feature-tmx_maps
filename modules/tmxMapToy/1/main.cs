@@ -38,8 +38,10 @@ function TmxMapToy::reset( %this )
     %db = new Sprite(TestAnimation)
     {
         Animation = "ToyAssets:TD_Knight_MoveWest";
-        position = "2 0";
-        size = "1.5 1.5";
+        //position = "2 0";
+        position = "0 -2";
+        //size = "1.5 1.5";
+        size = "1 1";
         SceneLayer = "14";
         DefaultDensity = 0.5;
         DefaultFriction = 0.1;
@@ -49,6 +51,8 @@ function TmxMapToy::reset( %this )
    %db.createCircleCollisionShape(0.2);  
    %db.setFixedAngle(true);
    %db.setLinearVelocity("5 3");
+   
+   SandboxWindow.setCameraZoom( 5 );
     
    SandboxScene.add( %db );
      

@@ -12,6 +12,7 @@
 
 #define TMX_MAP_TILESET_ASSETNAME_PROP "AssetName"
 #define TMX_MAP_LAYER_ID_PROP "LayerId"
+#define TMX_MAP_TILE_TAG_PROP "Tag"
 
 class TmxMapSprite : public SceneObject
 {
@@ -60,6 +61,10 @@ private:
 	void addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compSprite);
 	void addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite);
 	void addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite);
+
+	//	From previous versions
+	TmxMapAsset::LayerOverride getLayerAssetData(StringTableEntry layerName);
+	CompositeSprite* TmxMapSprite::CreateLayer(const TmxMapAsset::LayerOverride& layerOverride, int layerIndex, bool isTileLayer, bool isIso);
 
 public:
 	inline bool setMap( const char* pMapAssetId ){ if (pMapAssetId == NULL) return false; mMapAsset = pMapAssetId; BuildMap(); return false;}

@@ -137,12 +137,17 @@ void TmxMapSprite::BuildMap()
 		Tmx::Layer* layer = *layerItr;
 
 		//default to layer 0, unless a property is added to the layer that overrides it.
-		int layerNumber = 0;
-		layerNumber = layer->GetProperties().GetNumericProperty(TMX_MAP_LAYER_ID_PROP);
+		/*int layerNumber = 0;
+		layerNumber = layer->GetProperties().GetNumericProperty(TMX_MAP_LAYER_ID_PROP);*/
+		int layerNumber = -1;
+		if ( layer->GetProperties().HasProperty(TMX_MAP_LAYER_ID_PROP))
+			layerNumber = layer->GetProperties().GetNumericProperty(TMX_MAP_LAYER_ID_PROP);
+
+		auto assetLayerData = getLayerAssetData(  StringTable->insert(layer->GetName().c_str()) );
 
 
-
-		auto compSprite = CreateLayer(layerNumber, orient == Tmx::TMX_MO_ISOMETRIC);
+		//auto compSprite = CreateLayer(layerNumber, orient == Tmx::TMX_MO_ISOMETRIC);
+		auto compSprite = CreateLayer(assetLayerData, layerNumber, true, orient == Tmx::TMX_MO_ISOMETRIC);
 
 		int xTiles = mapParser->GetWidth();
 		int yTiles = mapParser->GetHeight();
@@ -163,8 +168,8 @@ void TmxMapSprite::BuildMap()
 				F32 spriteHeight = static_cast<F32>( tset->GetTileHeight() );
 				F32 spriteWidth = static_cast<F32>( tset->GetTileWidth() );
 
-				F32 heightOffset = ((spriteHeight - tileHeight) / 2) - (width / 2);
-				F32 widthOffset = ((spriteWidth - tileWidth) / 2) - (height / 2);
+				F32 heightOffset = ((spriteHeight - tileHeight) / 2) - (height / 2) - (tileHeight / 2);
+				F32 widthOffset = ((spriteWidth - tileWidth) / 2) - (width / 2) + (tileWidth / 2);
 
 
 				Vector2 pos = TileToCoord( 
@@ -244,15 +249,15 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
 	F32 objectWidth = static_cast<F32>(tileSet->GetTileWidth());
 	F32 objectHeight = static_cast<F32>(tileSet->GetTileHeight());
-	//F32 heightOffset =(objectHeight - tileHeight) / 2;
-	//F32 widthOffset = (objectWidth - tileWidth) / 2;
+	F32 heightOffset =(objectHeight - tileHeight) / 2;
+	F32 widthOffset = (objectWidth - tileWidth) / 2;
 	F32 halfTileHeight = tileHeight * 0.5f;
 
 	F32 width = (mapParser->GetWidth() * tileWidth);
 	F32 height = (mapParser->GetHeight() * tileHeight);
 	
-	F32 heightOffset = ((objectHeight - tileHeight) / 2) - (width / 2);
-	F32 widthOffset = ((objectWidth - tileWidth) / 2) - (height / 2);
+	//F32 heightOffset = ((objectHeight - tileHeight) / 2) - (width / 2);
+	//F32 widthOffset = ((objectWidth - tileWidth) / 2) - (height / 2);
 
 	Vector2 tileSize(tileWidth, tileHeight);
 	F32 originY = height / 2 - halfTileHeight;
@@ -263,8 +268,10 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	Vector2 vTile = CoordToTile( 
 		Vector2
 				(
-					static_cast<F32>(object->GetX()), 
-					static_cast<F32>(object->GetY())
+					//static_cast<F32>(object->GetX()), 
+					//static_cast<F32>(object->GetY())
+					static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
+					static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
 				),
 		tileSize,
 		orient == Tmx::TMX_MO_ISOMETRIC
@@ -298,7 +305,10 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
+	
+	F32 width = (mapParser->GetWidth() * tileWidth);	//	Width needed
 	F32 height = (mapParser->GetHeight() * tileHeight);
+
 	Vector2 tileSize(tileWidth, tileHeight);
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 
@@ -310,8 +320,10 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 		Tmx::Point second = line->GetPoint(i+1);
 		Vector2 lineOrigin = Vector2
 			(
-			static_cast<F32>(object->GetX()), 
-			static_cast<F32>(object->GetY())
+			//static_cast<F32>(object->GetX()), 
+			//static_cast<F32>(object->GetY())
+			static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
+			static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
 			);
 
 		//weird additions and subtractions in this area due to the fact that this engine uses bottom->left as origin, and TMX uses top->right. 
@@ -333,7 +345,10 @@ void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compS
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
+	
+	F32 width = (mapParser->GetWidth() * tileWidth);	//	Width needed
 	F32 height = (mapParser->GetHeight() * tileHeight);
+
 	Vector2 tileSize(tileWidth, tileHeight);
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	const Tmx::Polygon* line = object->GetPolygon();
@@ -341,8 +356,10 @@ void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compS
 	b2Vec2* pointsdata = new b2Vec2[points];
 	b2Vec2 origin = b2Vec2
 		(
-			static_cast<float32>(object->GetX()), 
-			static_cast<float32>(object->GetY())
+			//static_cast<float32>(object->GetX()), 
+			//static_cast<float32>(object->GetY())
+			static_cast<float32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
+			static_cast<float32>(object->GetY() + (height / 2) + (tileHeight / 2))
 		);
 	for (int i = 0; i < points; i++)
 	{
@@ -365,14 +382,19 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
+	
+	F32 mapWidth = (mapParser->GetWidth() * tileWidth);
 	F32 mapHeight = (mapParser->GetHeight() * tileHeight);
+
 	Vector2 tileSize(tileWidth, tileHeight);
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	const Tmx::Ellipse* ellipse = object->GetEllipse();
 	b2Vec2 origin = b2Vec2
 		(
-			static_cast<float32>(ellipse->GetCenterX()), 
-			static_cast<float32>(ellipse->GetCenterY())
+			//static_cast<float32>(ellipse->GetCenterX()), 
+			//static_cast<float32>(ellipse->GetCenterY())
+			static_cast<float32>(ellipse->GetCenterX() - (mapWidth / 2) + (tileWidth / 2)), 
+			static_cast<float32>(ellipse->GetCenterY() + (mapHeight / 2) + (tileHeight / 2))
 		);
 
 	F32 ellipseHeight = static_cast<F32>(ellipse->GetRadiusY());
@@ -401,13 +423,18 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
+	
+	F32 mapWidth = (mapParser->GetWidth() * tileWidth);
 	F32 mapHeight = (mapParser->GetHeight() * tileHeight);
+
 	Vector2 tileSize(tileWidth, tileHeight);
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	b2Vec2 origin = b2Vec2
 		(
-			static_cast<float32>(object->GetX()), 
-			static_cast<float32>(object->GetY())
+			//static_cast<float32>(object->GetX()), 
+			//static_cast<float32>(object->GetY())
+			static_cast<float32>(object->GetX() - (mapWidth / 2) + (tileWidth / 2)), 
+			static_cast<float32>(object->GetY() + (mapHeight / 2) + (tileHeight / 2))
 		);
 
 
@@ -459,6 +486,23 @@ Vector2 TmxMapSprite::TileToCoord(Vector2& pos, Vector2& tileSize, Vector2& offs
 	}
 }
 
+TmxMapAsset::LayerOverride TmxMapSprite::getLayerAssetData(StringTableEntry layerName)
+{
+	TmxMapAsset::LayerOverride layerOverride(layerName, 0, true, true);
+	auto overrideIdx = mMapAsset->getLayerOverrides().begin();
+	for(overrideIdx; overrideIdx != mMapAsset->getLayerOverrides().end(); ++overrideIdx)
+	{
+		auto chkOverride = *overrideIdx;
+
+		if (chkOverride.mLayerName == layerOverride.mLayerName)
+		{
+			layerOverride = chkOverride;
+			break;
+		}
+	}
+	return layerOverride;
+}
+
 CompositeSprite* TmxMapSprite::CreateLayer(int layerIndex, bool isIso)
 {
 	CompositeSprite* compSprite = new CompositeSprite();
@@ -468,7 +512,6 @@ CompositeSprite* TmxMapSprite::CreateLayer(int layerIndex, bool isIso)
 	if (scene)
 		scene->addToScene(compSprite);
 
-
 	compSprite->setBatchLayout( CompositeSprite::NO_LAYOUT );
 	compSprite->setPosition(getPosition());
 	compSprite->setSceneLayer(layerIndex);
@@ -476,6 +519,35 @@ CompositeSprite* TmxMapSprite::CreateLayer(int layerIndex, bool isIso)
 	compSprite->setBatchIsolated(true);
 	compSprite->setBodyType(b2_staticBody);
 
+	return compSprite;
+}
+
+CompositeSprite* TmxMapSprite::CreateLayer(const TmxMapAsset::LayerOverride& layerOverride, int layerIndex, bool isTileLayer, bool isIso)
+{
+	if (!layerOverride.mShouldRender)
+		return NULL;
+
+	CompositeSprite* compSprite = new CompositeSprite();
+	//compSprite->registerObject();
+	mLayers.push_back(compSprite);
+
+	auto scene = this->getScene();
+	if (scene)
+		scene->addToScene(compSprite);
+
+	compSprite->setBatchLayout( CompositeSprite::NO_LAYOUT );
+	compSprite->setPosition(getPosition());
+	//compSprite->setAngle(getAngle());
+
+	if (layerIndex == -1)
+		compSprite->setSceneLayer(layerOverride.mSceneLayer);
+	else
+		compSprite->setSceneLayer(layerIndex);
+	
+	compSprite->setBatchSortMode(SceneRenderQueue::RENDER_SORT_ZAXIS);
+	compSprite->setBatchIsolated(true);	//	false-Adam
+	compSprite->setBodyType(b2_staticBody);
+	//dynamic_cast<SpriteBatch*>(compSprite)->setBatchCulling( true );
 	return compSprite;
 }
 

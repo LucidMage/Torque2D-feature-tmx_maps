@@ -5,14 +5,6 @@
 #include "assets/assetPtr.h"
 #endif
 
-#ifndef _VECTOR_H_
-#include "collection/vector.h"
-#endif
-
-#ifndef _SCENE_OBJECT_H
-#include "2d/sceneobject/SceneObject.h"
-#endif
-
 #include <Tmx.h>
 
 //-----------------------------------------------------------------------------
@@ -27,23 +19,6 @@ class TmxMapAsset : public AssetBase
 ////T2D SIM/CONSOLE setup////////////////////
 private:
 	typedef AssetBase Parent;
-
-public:
-	struct LayerOverride
-	{
-		StringTableEntry	mLayerName;
-		S32					mSceneLayer;
-		bool				mShouldRender;
-		bool				mUseObjects;
-
-	public: LayerOverride(StringTableEntry lName, S32 layerIdx, bool render, bool objects)
-			{
-				mLayerName = lName;
-				mSceneLayer = layerIdx;
-				mShouldRender =render;
-				mUseObjects = objects;
-			}
-	};
 
 public: 
 
@@ -65,10 +40,6 @@ private:
 	/// Configuration.
 	StringTableEntry            mMapFile;
 
-	Vector<LayerOverride>		mLayerOverrides;
-	HashTable<S32, Vector<SceneObject*>> mTileObjects;
-	HashTable<StringTableEntry, Vector<SceneObject*>> mTileObjectsByTag;
-
 public:
 
 	void                    setMapFile( const char* pMapFile );
@@ -76,17 +47,10 @@ public:
 
 
 	StringTableEntry getOrientation();
-	S32				 getLayerCount();
-	const Vector<LayerOverride>& getLayerOverrides(){return mLayerOverrides;}
+	int				 getLayerCount();
+
 	Tmx::Map*		 getParser();
 
-	S32				getSceneLayer(const char* tmxLayerName);
-	void			setSceneLayer(const char*tmxLayerName, S32 layerIdx, bool shouldRender, bool useObjects);
-	S32				getLayerOverrideCount(){return mLayerOverrides.size();}
-	StringTableEntry getLayerOverrideName(int idx);
-
-	Vector<SceneObject*> getTileObjects(S32 gId);
-	Vector<SceneObject*> getTileObjectsByTag(StringTableEntry tag);
 private:
 
 	Tmx::Map*					mParser;
@@ -101,8 +65,6 @@ protected:
 	/// Taml callbacks.
 	virtual void onTamlPreWrite( void );
 	virtual void onTamlPostWrite( void );
-	virtual void onTamlCustomWrite( TamlCustomNodes& customNodes );
-	virtual void onTamlCustomRead( const TamlCustomNodes& customNodes );
 
 
 protected:

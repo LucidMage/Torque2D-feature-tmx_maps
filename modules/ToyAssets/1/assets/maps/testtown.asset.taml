@@ -4,11 +4,11 @@
 	>	
 
 	<TmxMapAsset.Layers>
-		<Layer Name="Floor" Layer="15" Render="true" useObjects="true" ></Layer>
-		<Layer Name="Fringe" Layer="14" Render="true" useObjects="true" ></Layer>
-		<Layer Name="Over" Layer="13" Render="true" useObjects="true"></Layer>
-		<Layer Name="Hip roof" Layer="12" Render="true" useObjects="true"></Layer>
-		<Layer Name="Collision" Layer = "15" Render = "false" useObjects="true"></Layer>
+		<Layer Name = "Floor" Layer = "15" Render="true" useObjects="true" ></Layer>
+		<Layer Name = "Fringe" Layer = "14" Render="true" useObjects="true" ></Layer>
+		<Layer Name = "Over" Layer = "13" Render="true" useObjects="true"></Layer>
+		<Layer Name = "Hip roof" Layer = "12" Render="true" useObjects="true"></Layer>
+		<Layer Name = "Collision" Layer = "15" Render = "false" useObjects="true"></Layer>
 	</TmxMapAsset.Layers>
 		
 	<TmxMapAsset.Tiles>
