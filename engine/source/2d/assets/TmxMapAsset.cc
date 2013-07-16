@@ -388,12 +388,11 @@ void TmxMapAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
 				}
 			}
 
-
 			if (tagName == StringTable->EmptyString)
 				mTileObjects.insertUnique(gId, objects);
 			else
 				mTileObjectsByTag.insertUnique(tagName, objects);
-
+			
 		}
 	}
 }

@@ -282,6 +282,10 @@ namespace Tmx
 			// Iterate through all of the objectgroup elements.
 			if( strcmp( node->Value(), "objectgroup" ) == 0 )
 			{
+				//	Adam
+				//Con::errorf();
+				//	Adam
+
 				// Allocate a new object group and parse it.
 				ObjectGroup *objectGroup = new ObjectGroup();
 				objectGroup->Parse(node);
