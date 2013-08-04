@@ -1,6 +1,5 @@
 #include "TmxMapAsset.h"
 
-
 // Debug Profiling.
 #include "debug/profiler.h"
 
@@ -392,7 +391,6 @@ void TmxMapAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
 				mTileObjects.insertUnique(gId, objects);
 			else
 				mTileObjectsByTag.insertUnique(tagName, objects);
-			
 		}
 	}
 }

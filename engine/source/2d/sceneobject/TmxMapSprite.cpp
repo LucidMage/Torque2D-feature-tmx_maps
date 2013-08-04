@@ -155,23 +155,18 @@ void TmxMapSprite::BuildMap()
 	Vector2 originSize(originX, originY);
 
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
-
+	
 	auto layerItr = mapParser->GetLayers().begin();
 	for(layerItr; layerItr != mapParser->GetLayers().end(); ++layerItr)
 	{
 		Tmx::Layer* layer = *layerItr;
 
 		//default to layer 0, unless a property is added to the layer that overrides it.
-		/*int layerNumber = 0;
-		layerNumber = layer->GetProperties().GetNumericProperty(TMX_MAP_LAYER_ID_PROP);*/
 		int layerNumber = -1;
 		if ( layer->GetProperties().HasProperty(TMX_MAP_LAYER_ID_PROP))
 			layerNumber = layer->GetProperties().GetNumericProperty(TMX_MAP_LAYER_ID_PROP);
 
 		auto assetLayerData = getLayerAssetData(  StringTable->insert(layer->GetName().c_str()) );
-
-
-		//auto compSprite = CreateLayer(layerNumber, orient == Tmx::TMX_MO_ISOMETRIC);
 		auto compSprite = CreateLayer(assetLayerData, layerNumber, true, orient == Tmx::TMX_MO_ISOMETRIC);
 
 		int xTiles = mapParser->GetWidth();
@@ -187,7 +182,6 @@ void TmxMapSprite::BuildMap()
 
 				StringTableEntry assetName = GetTilesetAsset(tset);
 				if (assetName == StringTable->EmptyString) continue;
-
 
 				int localFrame = tile.id;
 				F32 spriteHeight = static_cast<F32>( tset->GetTileHeight() );
@@ -209,15 +203,7 @@ void TmxMapSprite::BuildMap()
 					);
 				pos.add(Vector2(widthOffset, heightOffset));
 				pos *= mMapPixelToMeterFactor;
-				/*
-				auto bId = compSprite->addSprite( SpriteBatchItem::LogicalPosition( pos.scriptThis()) );
-				compSprite->selectSpriteId(bId);
-				compSprite->setSpriteImage(assetName, localFrame);
-				compSprite->setSpriteSize( Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
-
-				compSprite->setSpriteFlipX(tile.flippedHorizontally);
-				compSprite->setSpriteFlipY(tile.flippedVertically);
-				*/
+				
 				//	From previous version
 				if (assetLayerData.mShouldRender)
 				{
@@ -228,7 +214,7 @@ void TmxMapSprite::BuildMap()
 					compSprite->setSpriteFlipX(tile.flippedHorizontally);
 					compSprite->setSpriteFlipY(tile.flippedVertically);
 				}
-
+				
 				if (assetLayerData.mUseObjects)
 				{
 					//see if this tile has any defined objects.
@@ -249,13 +235,25 @@ void TmxMapSprite::BuildMap()
 					{
 						objects = mMapAsset->getTileObjects( tile.tilesetId + tile.id );
 					}
-
+					
 					for(auto objItr = objects.begin(); objItr != objects.end(); ++objItr)
 					{
 						auto baseObject = *objItr;
 
 						SceneObject* newObj = new SceneObject();
 						baseObject->copyTo(newObj);
+						
+						//	SRG - Changes
+						//	Assign tagName as sceneobject name
+						//	Note: Only the first read object will recieve the name, all later tagged objects will remain unnamed
+						if (tagName != StringTable->EmptyString)
+						{
+							auto checkObj = Sim::findObject<SceneObject>(tagName);
+
+							if (checkObj == NULL )
+								newObj->assignName(tagName);
+						}
+						//	SRG - Changes
 
 						newObj->setAwake(false);
 						newObj->setSize( Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
@@ -265,17 +263,16 @@ void TmxMapSprite::BuildMap()
 						newObj->setSceneLayer( assetLayerData.mSceneLayer );
 						newObj->registerObject();
 						mObjects.push_back(newObj);
-
+						
 						if (getScene() != NULL)
 							getScene()->addToScene( newObj );
-
 					}
 				}
 			}
 		}
 
 	}
-
+	
 	auto groupIdx = mapParser->GetObjectGroups().begin();
 	for(groupIdx; groupIdx != mapParser->GetObjectGroups().end(); ++groupIdx)
 	{
@@ -288,7 +285,6 @@ void TmxMapSprite::BuildMap()
 
 		//	From previous version
 		auto assetLayerData = getLayerAssetData(  StringTable->insert(groupLayer->GetName().c_str()) );
-		//auto compSprite = CreateLayer(assetLayerData, layerNumber, false, orient == Tmx::TMX_MO_ISOMETRIC);
 
 		auto objectIdx = groupLayer->GetObjects().begin();
 		for(objectIdx; objectIdx != groupLayer->GetObjects().end(); ++objectIdx)
@@ -300,9 +296,23 @@ void TmxMapSprite::BuildMap()
 
 			if (tileSet != NULL) 
 				addObjectAsSprite(tileSet, object, mapParser, gid, compSprite);
+
+			//	SRG Changes
+			std::string triggerName = "";
+			std::string triggerType = "";
+
+			if (groupLayer->GetName() == "trigger")
+			{
+				triggerName = object->GetName();
+				triggerType = object->GetType();
+			}
+			//	SRG Changes
 			
 			//is it a physics object?
-			if (object->GetType() == "collision" || groupLayer->GetName() == "collision"){
+			if (object->GetType() == "collision" || groupLayer->GetName() == "collision"
+				//	SRG Changes
+				|| groupLayer->GetName() == "trigger")
+			{
 				//it is!
 				//try to add some physics bodies...
 
@@ -312,20 +322,20 @@ void TmxMapSprite::BuildMap()
 				else if (object->GetPolygon() != nullptr){
 					addPhysicsPolygon(object, compSprite);
 				}
-				else if (object->GetEllipse() != nullptr){
-					addPhysicsEllipse(object, compSprite);
+				else if (object->GetEllipse() != nullptr/* SRG Changes */ || triggerName == "Trigger"){
+					addPhysicsEllipse(object, compSprite, triggerName);
 				}
 				else{
 					//must be a rectangle. 
-					addPhysicsRectangle(object, compSprite);
+					addPhysicsRectangle(object, compSprite, triggerName);
 				}
 			}
 		}
 	}
 }
 
-void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* object, Tmx::Map * mapParser, int gid, CompositeSprite* compSprite ){
-
+void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* object, Tmx::Map * mapParser, int gid, CompositeSprite* compSprite )
+{
 	F32 tileWidth = static_cast<F32>( mapParser->GetTileWidth() );
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
 	F32 objectWidth = static_cast<F32>(tileSet->GetTileWidth());
@@ -377,12 +387,10 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	compSprite->setSpriteSize(Vector2( objectWidth * mMapPixelToMeterFactor, objectHeight * mMapPixelToMeterFactor));
 	compSprite->setSpriteFlipX(false);
 	compSprite->setSpriteFlipY(false);
-
-
 }
 
-void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* compSprite){
-
+void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* compSprite)
+{
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
@@ -415,14 +423,11 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 		secondPoint += Vector2(-tileWidth/2,tileHeight/2);
 
 		compSprite->createEdgeCollisionShape(firstPoint * mMapPixelToMeterFactor, secondPoint * mMapPixelToMeterFactor, false, false, Vector2(), Vector2());
-
 	}
-
-	
-
 }
 
-void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compSprite){
+void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compSprite)
+{
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
@@ -459,7 +464,8 @@ void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compS
 		delete[] pointsdata;
 }
 
-void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite){
+void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName)
+{
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
@@ -483,7 +489,8 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 
 	//tmx allows arbitrary ellipses, t2d only lets us use circles. approximate ellipses with a height:width ratio of 1/2 - 2with a circle, otherwise fail.
 	F32 ratio = ellipseHeight/ellipseWidth;
-	if (ratio < 0.5f || ratio > 2.0f){
+	if (ratio < 0.5f || ratio > 2.0f)
+	{
 		Con::warnf("TMX map has an ellipse collision body with H:W ratio outside of our approximatable bounds. Use a different shape.");
 		return; 
 	}
@@ -495,12 +502,34 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint *= mMapPixelToMeterFactor;
-		compSprite->createCircleCollisionShape( (ellipseHeight > ellipseWidth ? ellipseHeight : ellipseWidth ) * mMapPixelToMeterFactor, nativePoint);
+		//compSprite->createCircleCollisionShape( (ellipseHeight > ellipseWidth ? ellipseHeight : ellipseWidth ) * mMapPixelToMeterFactor, nativePoint);
 
+		//	SRG Changes
+		if (triggerName != "")
+		{
+			Trigger* newTrigger = new Trigger();
+			Vector2 pos = Vector2(nativePoint.x, nativePoint.y);
+			Vector2 size = Vector2(ellipseWidth * mMapPixelToMeterFactor, ellipseHeight * mMapPixelToMeterFactor);
 
+			newTrigger->assignName(triggerName.c_str());
+			newTrigger->setPosition(pos);
+			newTrigger->setSize(size.x * 2, size.y * 2);	//	Seems to be reading as radius
+
+			newTrigger->createCircleCollisionShape(size.y > size.x ? size.y : size.x);
+			newTrigger->setCollisionShapeIsSensor(0, true);	//	So sprites can move through it by default
+
+			mObjects.push_back(newTrigger);
+
+			if (getScene() != NULL)
+				getScene()->addToScene( newTrigger );
+		}
+		else
+			compSprite->createCircleCollisionShape( (ellipseHeight > ellipseWidth ? ellipseHeight : ellipseWidth ) * mMapPixelToMeterFactor, nativePoint);
+		//	SRG Changes
 }
 
-void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite){
+void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName)
+{
 	auto mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
@@ -526,14 +555,34 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint += b2Vec2(object->GetWidth()/2.0f, -(object->GetHeight()/2.0f)); //adjust for tmx defining from bottom left point while t2d defines from center...
 		nativePoint *= mMapPixelToMeterFactor;
-		compSprite->createPolygonBoxCollisionShape(object->GetWidth()*mMapPixelToMeterFactor, object->GetHeight()*mMapPixelToMeterFactor, nativePoint);
+		//compSprite->createPolygonBoxCollisionShape(object->GetWidth()*mMapPixelToMeterFactor, object->GetHeight()*mMapPixelToMeterFactor, nativePoint);
 		
+		//	SRG Changes
+		if (triggerName != "")
+		{
+			Trigger* newTrigger = new Trigger();
+			Vector2 pos = Vector2(nativePoint.x, nativePoint.y);
+			Vector2 size = Vector2(object->GetWidth()*mMapPixelToMeterFactor, object->GetHeight()*mMapPixelToMeterFactor);
 
+			newTrigger->assignName(triggerName.c_str());
+			newTrigger->setPosition(pos);
+			newTrigger->setSize(size);
+
+			newTrigger->createPolygonBoxCollisionShape(size.x, size.y);
+			newTrigger->setCollisionShapeIsSensor(0, true);	//	So sprites can move through it by default
+
+			mObjects.push_back(newTrigger);
+
+			if (getScene() != NULL)
+				getScene()->addToScene( newTrigger );
+		}
+		else
+			compSprite->createPolygonBoxCollisionShape(object->GetWidth()*mMapPixelToMeterFactor, object->GetHeight()*mMapPixelToMeterFactor, nativePoint);
+		//	SRG Changes
 }
 
 Vector2 TmxMapSprite::CoordToTile(Vector2& pos, Vector2& tileSize, bool isIso)
 {
-
 	if (isIso)
 	{
 		Vector2 newPos(
@@ -628,7 +677,7 @@ CompositeSprite* TmxMapSprite::CreateLayer(const TmxMapAsset::LayerOverride& lay
 		compSprite->setSceneLayer(layerIndex);
 	
 	compSprite->setBatchSortMode(SceneRenderQueue::RENDER_SORT_ZAXIS);
-	compSprite->setBatchIsolated(true);	//	false-Adam
+	compSprite->setBatchIsolated(true);	//	Previously false - SRG Changes
 	compSprite->setBodyType(b2_staticBody);
 	dynamic_cast<SpriteBatch*>(compSprite)->setBatchCulling( true );
 	return compSprite;
@@ -688,7 +737,8 @@ StringTableEntry TmxMapSprite::GetTilesetAsset(const Tmx::Tileset* tileSet)
 	return assetName;
 }
 
-const char* TmxMapSprite::getTileProperty(StringTableEntry lName, StringTableEntry pName, int x,int y){
+const char* TmxMapSprite::getTileProperty(StringTableEntry lName, StringTableEntry pName, int x,int y)
+{
 	//we'll need a parser and to iterate over the layers
 	auto mapParser = mMapAsset->getParser();
 	auto layerItr = mapParser->GetLayers().begin();
@@ -707,8 +757,8 @@ const char* TmxMapSprite::getTileProperty(StringTableEntry lName, StringTableEnt
 			return "";
 
 		const Tmx::PropertySet pset = tset->GetTile(tile.id)->GetProperties();
-		if (pset.HasProperty(pName)){
-
+		if (pset.HasProperty(pName))
+		{
 			//we have the result, put it in the string table and return it
 			std::string presult = pset.GetLiteralProperty(pName);
 			StringTableEntry s = StringTable->insert(presult.c_str());
@@ -722,10 +772,10 @@ const char* TmxMapSprite::getTileProperty(StringTableEntry lName, StringTableEnt
 	//no layer or property of that name. 
 	//return empty
 	return "";
-
 }
 
-Vector2 TmxMapSprite::getTileSize(){
+Vector2 TmxMapSprite::getTileSize()
+{
 	Tmx::Map* mapParser = mMapAsset->getParser();
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
 	F32 tileHeight = static_cast<F32>(mapParser->GetTileHeight());
@@ -733,13 +783,15 @@ Vector2 TmxMapSprite::getTileSize(){
 
 }
 
-bool TmxMapSprite::isIsoMap(){
+bool TmxMapSprite::isIsoMap()
+{
 	Tmx::Map* mapParser = mMapAsset->getParser();
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	return orient == Tmx::TMX_MO_ISOMETRIC;
 }
 
-void TmxMapSprite::setBodyType(const b2BodyType type){
+void TmxMapSprite::setBodyType(const b2BodyType type)
+{
 	Parent::setBodyType(type);
 
 	auto layerIdx = mLayers.begin();
@@ -753,6 +805,4 @@ void TmxMapSprite::setBodyType(const b2BodyType type){
 	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
 		(*objectsIdx)->setBodyType(type);
 	}
-
-
 }

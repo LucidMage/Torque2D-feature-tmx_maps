@@ -5,6 +5,12 @@
 #include "2d/sceneobject/CompositeSprite.h"
 #endif
 
+//	SRG Changes
+#ifndef _TRIGGER_H_
+#include "2d/sceneobject/Trigger.h"
+#endif
+//	SRG Changes
+
 #ifndef _TMXMAP_ASSET_H_
 #include "2d/assets/TmxMapAsset.h"
 #endif
@@ -61,8 +67,8 @@ private:
 	void addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* object, Tmx::Map * mapParser, int gid, CompositeSprite* compSprite );
 	void addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* compSprite);
 	void addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compSprite);
-	void addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite);
-	void addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite);
+	void addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName);
+	void addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName);
 
 	//	From previous versions
 	TmxMapAsset::LayerOverride getLayerAssetData(StringTableEntry layerName);
