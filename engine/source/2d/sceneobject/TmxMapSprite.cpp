@@ -3,6 +3,11 @@
 #include "assets/assetManager.h"
 #include <string>
 
+//	SRG - Changes
+#include <sstream>
+#include <cctype>
+//	SRG - Changes
+
 //script bindings
 #include "TmxMapSprite_ScriptBinding.h"
 
@@ -236,36 +241,68 @@ void TmxMapSprite::BuildMap()
 						objects = mMapAsset->getTileObjects( tile.tilesetId + tile.id );
 					}
 					
-					for(auto objItr = objects.begin(); objItr != objects.end(); ++objItr)
+					//	SRG - Changes
+					SceneObject* newObj = new SceneObject();
+
+					Vector2 size = Vector2(spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor);
+					S32 sceneLayer = assetLayerData.mSceneLayer;
+
+					std::string layerName = layer->GetName().c_str();
+
+					//	Convert to lower case
+					for (int i = 0; i < layerName.length(); i++)
+						layerName[i] = tolower(layerName[i]);
+
+					int wordPos = layerName.find(TMX_MAP_LAYER_SPRITE_PROP);
+					
+					std::stringstream ss;
+					std::string tag = "";
+
+					if (tagName != StringTable->EmptyString)
+						tag = tagName;
+
+					if (wordPos > -1)	//	Recieving -1 instead of npos for some reason
 					{
-						auto baseObject = *objItr;
-
-						SceneObject* newObj = new SceneObject();
-						baseObject->copyTo(newObj);
-						
-						//	SRG - Changes
-						//	Assign tagName as sceneobject name
-						//	Note: Only the first read object will recieve the name, all later tagged objects will remain unnamed
 						if (tagName != StringTable->EmptyString)
+							//	If name is already assigned an error message will occur in the log
+							newObj->assignName(tagName);
+
+						addSceneObject(newObj, pos, size, sceneLayer);
+					}
+					else
+					{
+					//	SRG - Changes
+						for (auto objItr = objects.begin(); objItr != objects.end(); ++objItr)
 						{
-							auto checkObj = Sim::findObject<SceneObject>(tagName);
+							auto baseObject = *objItr;
 
-							if (checkObj == NULL )
-								newObj->assignName(tagName);
-						}
-						//	SRG - Changes
-
-						newObj->setAwake(false);
-						newObj->setSize( Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
-
-						Vector2 objPos(pos + this->getPosition());
-						newObj->setPosition(objPos);
-						newObj->setSceneLayer( assetLayerData.mSceneLayer );
-						newObj->registerObject();
-						mObjects.push_back(newObj);
+							//SceneObject* newObj = new SceneObject();
+							baseObject->copyTo(newObj);
 						
-						if (getScene() != NULL)
-							getScene()->addToScene( newObj );
+							//	Assign tagName as sceneobject name if on sprite layers
+						/*
+							if (tagName != StringTable->EmptyString && isSpriteLayer != NULL)
+							{
+								//	If name is already assigned an error message will occur in the log
+								auto checkObj = Sim::findObject<SceneObject>(tagName);
+								newObj->assignName(tagName);
+							}*/
+
+							addSceneObject(newObj, pos, size, sceneLayer);
+							//	SRG - Changes
+							/*
+							newObj->setAwake(false);
+							newObj->setSize( Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
+
+							Vector2 objPos(pos + this->getPosition());
+							newObj->setPosition(objPos);
+							newObj->setSceneLayer( assetLayerData.mSceneLayer );
+							newObj->registerObject();
+							mObjects.push_back(newObj);
+						
+							if (getScene() != NULL)
+								getScene()->addToScene( newObj );*/
+						}
 					}
 				}
 			}
@@ -301,17 +338,16 @@ void TmxMapSprite::BuildMap()
 			std::string triggerName = "";
 			std::string triggerType = "";
 
-			if (groupLayer->GetName() == "trigger")
+			if (groupLayer->GetName() == TMX_MAP_LAYER_TRIGGER_PROP)
 			{
 				triggerName = object->GetName();
 				triggerType = object->GetType();
 			}
-			//	SRG Changes
 			
 			//is it a physics object?
-			if (object->GetType() == "collision" || groupLayer->GetName() == "collision"
-				//	SRG Changes
-				|| groupLayer->GetName() == "trigger")
+			if (object->GetType() == TMX_MAP_LAYER_COLLISION_PROP
+				|| groupLayer->GetName() == TMX_MAP_LAYER_COLLISION_PROP
+				|| groupLayer->GetName() == TMX_MAP_LAYER_TRIGGER_PROP)
 			{
 				//it is!
 				//try to add some physics bodies...
@@ -322,7 +358,7 @@ void TmxMapSprite::BuildMap()
 				else if (object->GetPolygon() != nullptr){
 					addPhysicsPolygon(object, compSprite);
 				}
-				else if (object->GetEllipse() != nullptr/* SRG Changes */ || triggerName == "Trigger"){
+				else if (object->GetEllipse() != nullptr){
 					addPhysicsEllipse(object, compSprite, triggerName);
 				}
 				else{
@@ -333,6 +369,23 @@ void TmxMapSprite::BuildMap()
 		}
 	}
 }
+
+//	SRG Changes
+void TmxMapSprite::addSceneObject(SceneObject* newObj, Vector2 pos, Vector2 size, S32 sceneLayer)
+{
+	newObj->setAwake(false);
+	newObj->setSize(size);// Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
+
+	Vector2 objPos(pos + this->getPosition());
+	newObj->setPosition(objPos);
+	newObj->setSceneLayer(sceneLayer);// assetLayerData.mSceneLayer );
+	newObj->registerObject();
+	mObjects.push_back(newObj);
+						
+	if (getScene() != NULL)
+		getScene()->addToScene( newObj );
+}
+//	SRG Changes
 
 void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* object, Tmx::Map * mapParser, int gid, CompositeSprite* compSprite )
 {

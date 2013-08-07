@@ -19,6 +19,11 @@
 #define TMX_MAP_TILESET_ASSETNAME_PROP "AssetName"
 #define TMX_MAP_LAYER_ID_PROP "LayerId"
 #define TMX_MAP_TILE_TAG_PROP "Tag"
+//	SRG Changes
+#define TMX_MAP_LAYER_COLLISION_PROP "collision"
+#define TMX_MAP_LAYER_SPRITE_PROP "sprite"	//Keep in lowercase
+#define TMX_MAP_LAYER_TRIGGER_PROP "trigger"
+//	SRG Changes
 
 class TmxMapSprite : public SceneObject
 {
@@ -69,6 +74,9 @@ private:
 	void addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compSprite);
 	void addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName);
 	void addPhysicsRectangle(Tmx::Object* object, CompositeSprite* compSprite/* SRG Changes */, std::string triggerName);
+	//	SRG Changes
+	void addSceneObject(SceneObject* newObj, Vector2 pos, Vector2 size, S32 sceneLayer);
+	//	SRG Changes
 
 	//	From previous versions
 	TmxMapAsset::LayerOverride getLayerAssetData(StringTableEntry layerName);
