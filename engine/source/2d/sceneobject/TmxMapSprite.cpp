@@ -4,7 +4,6 @@
 #include <string>
 
 //	SRG - Changes
-#include <sstream>
 #include <cctype>
 //	SRG - Changes
 
@@ -255,7 +254,6 @@ void TmxMapSprite::BuildMap()
 
 					int wordPos = layerName.find(TMX_MAP_LAYER_SPRITE_PROP);
 					
-					std::stringstream ss;
 					std::string tag = "";
 
 					if (tagName != StringTable->EmptyString)
@@ -263,6 +261,7 @@ void TmxMapSprite::BuildMap()
 
 					if (wordPos > -1)	//	Recieving -1 instead of npos for some reason
 					{
+						//	Assign tagName as sceneobject name if on sprite layers
 						if (tagName != StringTable->EmptyString)
 							//	If name is already assigned an error message will occur in the log
 							newObj->assignName(tagName);
@@ -275,33 +274,9 @@ void TmxMapSprite::BuildMap()
 						for (auto objItr = objects.begin(); objItr != objects.end(); ++objItr)
 						{
 							auto baseObject = *objItr;
-
-							//SceneObject* newObj = new SceneObject();
 							baseObject->copyTo(newObj);
-						
-							//	Assign tagName as sceneobject name if on sprite layers
-						/*
-							if (tagName != StringTable->EmptyString && isSpriteLayer != NULL)
-							{
-								//	If name is already assigned an error message will occur in the log
-								auto checkObj = Sim::findObject<SceneObject>(tagName);
-								newObj->assignName(tagName);
-							}*/
-
 							addSceneObject(newObj, pos, size, sceneLayer);
 							//	SRG - Changes
-							/*
-							newObj->setAwake(false);
-							newObj->setSize( Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
-
-							Vector2 objPos(pos + this->getPosition());
-							newObj->setPosition(objPos);
-							newObj->setSceneLayer( assetLayerData.mSceneLayer );
-							newObj->registerObject();
-							mObjects.push_back(newObj);
-						
-							if (getScene() != NULL)
-								getScene()->addToScene( newObj );*/
 						}
 					}
 				}
@@ -374,11 +349,11 @@ void TmxMapSprite::BuildMap()
 void TmxMapSprite::addSceneObject(SceneObject* newObj, Vector2 pos, Vector2 size, S32 sceneLayer)
 {
 	newObj->setAwake(false);
-	newObj->setSize(size);// Vector2( spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor ) );
+	newObj->setSize(size);
 
 	Vector2 objPos(pos + this->getPosition());
 	newObj->setPosition(objPos);
-	newObj->setSceneLayer(sceneLayer);// assetLayerData.mSceneLayer );
+	newObj->setSceneLayer(sceneLayer);
 	newObj->registerObject();
 	mObjects.push_back(newObj);
 						
@@ -399,9 +374,6 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 
 	F32 width = (mapParser->GetWidth() * tileWidth);
 	F32 height = (mapParser->GetHeight() * tileHeight);
-	
-	//F32 heightOffset = ((objectHeight - tileHeight) / 2) - (width / 2);
-	//F32 widthOffset = ((objectWidth - tileWidth) / 2) - (height / 2);
 
 	Vector2 tileSize(tileWidth, tileHeight);
 	F32 originY = height / 2 - halfTileHeight;
@@ -412,8 +384,6 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	Vector2 vTile = CoordToTile( 
 		Vector2
 				(
-					//static_cast<F32>(object->GetX()), 
-					//static_cast<F32>(object->GetY())
 					static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
 					static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
 				),
@@ -462,8 +432,6 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 		Tmx::Point second = line->GetPoint(i+1);
 		Vector2 lineOrigin = Vector2
 			(
-			//static_cast<F32>(object->GetX()), 
-			//static_cast<F32>(object->GetY())
 			static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
 			static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
 			);
@@ -495,8 +463,6 @@ void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compS
 	b2Vec2* pointsdata = new b2Vec2[points];
 	b2Vec2 origin = b2Vec2
 		(
-			//static_cast<float32>(object->GetX()), 
-			//static_cast<float32>(object->GetY())
 			static_cast<float32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
 			static_cast<float32>(object->GetY() + (height / 2) + (tileHeight / 2))
 		);
@@ -531,8 +497,6 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 	const Tmx::Ellipse* ellipse = object->GetEllipse();
 	b2Vec2 origin = b2Vec2
 		(
-			//static_cast<float32>(ellipse->GetCenterX()), 
-			//static_cast<float32>(ellipse->GetCenterY())
 			static_cast<float32>(ellipse->GetCenterX() - (mapWidth / 2) + (tileWidth / 2)), 
 			static_cast<float32>(ellipse->GetCenterY() + (mapHeight / 2) + (tileHeight / 2))
 		);
@@ -555,7 +519,6 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint *= mMapPixelToMeterFactor;
-		//compSprite->createCircleCollisionShape( (ellipseHeight > ellipseWidth ? ellipseHeight : ellipseWidth ) * mMapPixelToMeterFactor, nativePoint);
 
 		//	SRG Changes
 		if (triggerName != "")
@@ -571,6 +534,7 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 			newTrigger->createCircleCollisionShape(size.y > size.x ? size.y : size.x);
 			newTrigger->setCollisionShapeIsSensor(0, true);	//	So sprites can move through it by default
 
+			newTrigger->registerObject();
 			mObjects.push_back(newTrigger);
 
 			if (getScene() != NULL)
@@ -594,8 +558,6 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 	b2Vec2 origin = b2Vec2
 		(
-			//static_cast<float32>(object->GetX()), 
-			//static_cast<float32>(object->GetY())
 			static_cast<float32>(object->GetX() - (mapWidth / 2) + (tileWidth / 2)), 
 			static_cast<float32>(object->GetY() + (mapHeight / 2) + (tileHeight / 2))
 		);
@@ -608,7 +570,6 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint += b2Vec2(object->GetWidth()/2.0f, -(object->GetHeight()/2.0f)); //adjust for tmx defining from bottom left point while t2d defines from center...
 		nativePoint *= mMapPixelToMeterFactor;
-		//compSprite->createPolygonBoxCollisionShape(object->GetWidth()*mMapPixelToMeterFactor, object->GetHeight()*mMapPixelToMeterFactor, nativePoint);
 		
 		//	SRG Changes
 		if (triggerName != "")
@@ -623,7 +584,8 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 
 			newTrigger->createPolygonBoxCollisionShape(size.x, size.y);
 			newTrigger->setCollisionShapeIsSensor(0, true);	//	So sprites can move through it by default
-
+			
+			newTrigger->registerObject();
 			mObjects.push_back(newTrigger);
 
 			if (getScene() != NULL)
