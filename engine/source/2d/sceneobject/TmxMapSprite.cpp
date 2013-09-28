@@ -21,6 +21,7 @@ TmxMapSprite::TmxMapSprite() : mMapPixelToMeterFactor(0.03f),
 	mLastTileImage(StringTable->EmptyString)
 {
 	mAutoSizing = true;
+	setSleepingAllowed(true);	//	From previous versions
 	setBodyType(b2_staticBody);
 }
 
@@ -72,12 +73,13 @@ void TmxMapSprite::OnRegisterScene(Scene* pScene)
 void TmxMapSprite::OnUnregisterScene( Scene* pScene )
 {
 	Parent::OnUnregisterScene(pScene);
-
+	
 	auto layerIdx = mLayers.begin();
 	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
 	{
 		pScene->removeFromScene(*layerIdx);
 	}
+
 	auto objectsIdx = mObjects.begin();
 	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
 		pScene->removeFromScene(*objectsIdx);
@@ -126,13 +128,16 @@ void TmxMapSprite::ClearMap()
 	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
 	{
 		CompositeSprite* sprite = *layerIdx;
-		delete sprite;
+		//delete sprite;
+		sprite->deleteObject();	//	From previous versions
 	}
 	mLayers.clear();
+
 	auto objectsIdx = mObjects.begin();
 	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
 		SceneObject* object = *objectsIdx;
-		delete object;
+		//delete object;
+		object->deleteObject();	//	From previous versions
 	}
 	mObjects.clear();
 }
@@ -141,8 +146,9 @@ void TmxMapSprite::BuildMap()
 	// Debug Profiling.
 	PROFILE_SCOPE(TmxMapSprite_BuildMap);
 
-
 	ClearMap();
+
+	if (mMapAsset.isNull()) return;	//	From previous versions
 	auto mapParser = mMapAsset->getParser();
 
 	F32 tileWidth = static_cast<F32>(mapParser->GetTileWidth());
@@ -242,12 +248,11 @@ void TmxMapSprite::BuildMap()
 					
 					//	SRG - Changes
 					SceneObject* newObj = new SceneObject();
-
+					
 					Vector2 size = Vector2(spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor);
 					S32 sceneLayer = assetLayerData.mSceneLayer;
 
 					std::string layerName = layer->GetName().c_str();
-
 					//	Convert to lower case
 					for (int i = 0; i < layerName.length(); i++)
 						layerName[i] = tolower(layerName[i]);
@@ -269,16 +274,14 @@ void TmxMapSprite::BuildMap()
 						addSceneObject(newObj, pos, size, sceneLayer);
 					}
 					else
-					{
-					//	SRG - Changes
 						for (auto objItr = objects.begin(); objItr != objects.end(); ++objItr)
 						{
 							auto baseObject = *objItr;
 							baseObject->copyTo(newObj);
+
 							addSceneObject(newObj, pos, size, sceneLayer);
-							//	SRG - Changes
 						}
-					}
+					//	SRG - Changes
 				}
 			}
 		}
@@ -519,7 +522,7 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint *= mMapPixelToMeterFactor;
-
+		
 		//	SRG Changes
 		if (triggerName != "")
 		{
@@ -652,6 +655,7 @@ TmxMapAsset::LayerOverride TmxMapSprite::getLayerAssetData(StringTableEntry laye
 CompositeSprite* TmxMapSprite::CreateLayer(int layerIndex, bool isIso)
 {
 	CompositeSprite* compSprite = new CompositeSprite();
+	compSprite->registerObject();
 	mLayers.push_back(compSprite);
 
 	auto scene = this->getScene();
@@ -662,7 +666,7 @@ CompositeSprite* TmxMapSprite::CreateLayer(int layerIndex, bool isIso)
 	compSprite->setPosition(getPosition());
 	compSprite->setSceneLayer(layerIndex);
 	compSprite->setBatchSortMode(SceneRenderQueue::RENDER_SORT_ZAXIS);
-	compSprite->setBatchIsolated(true);
+	compSprite->setBatchIsolated(false);	//	Was true
 	compSprite->setBodyType(b2_staticBody);
 
 	return compSprite;
@@ -675,7 +679,7 @@ CompositeSprite* TmxMapSprite::CreateLayer(const TmxMapAsset::LayerOverride& lay
 		return NULL;
 
 	CompositeSprite* compSprite = new CompositeSprite();
-	//compSprite->registerObject();
+	compSprite->registerObject();
 	mLayers.push_back(compSprite);
 
 	auto scene = this->getScene();
@@ -692,7 +696,7 @@ CompositeSprite* TmxMapSprite::CreateLayer(const TmxMapAsset::LayerOverride& lay
 		compSprite->setSceneLayer(layerIndex);
 	
 	compSprite->setBatchSortMode(SceneRenderQueue::RENDER_SORT_ZAXIS);
-	compSprite->setBatchIsolated(true);	//	Previously false - SRG Changes
+	compSprite->setBatchIsolated(false);	//	Previously false - SRG Changes
 	compSprite->setBodyType(b2_staticBody);
 	dynamic_cast<SpriteBatch*>(compSprite)->setBatchCulling( true );
 	return compSprite;
