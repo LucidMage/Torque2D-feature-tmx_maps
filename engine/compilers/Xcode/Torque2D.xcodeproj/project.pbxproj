@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1443A6BF181780AC00D03450 /* TmxEllipse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A699181780AC00D03450 /* TmxEllipse.cpp */; };
+		1443A6C0181780AC00D03450 /* TmxImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A69B181780AC00D03450 /* TmxImage.cpp */; };
+		1443A6C1181780AC00D03450 /* TmxImageLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A69D181780AC00D03450 /* TmxImageLayer.cpp */; };
+		1443A6C2181780AC00D03450 /* TmxLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A69F181780AC00D03450 /* TmxLayer.cpp */; };
+		1443A6C3181780AC00D03450 /* TmxMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6A1181780AC00D03450 /* TmxMap.cpp */; };
+		1443A6C4181780AC00D03450 /* TmxObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6A4181780AC00D03450 /* TmxObject.cpp */; };
+		1443A6C5181780AC00D03450 /* TmxObjectGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6A6181780AC00D03450 /* TmxObjectGroup.cpp */; };
+		1443A6C6181780AC00D03450 /* TmxPolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6A9181780AC00D03450 /* TmxPolygon.cpp */; };
+		1443A6C7181780AC00D03450 /* TmxPolyline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6AB181780AC00D03450 /* TmxPolyline.cpp */; };
+		1443A6C8181780AC00D03450 /* TmxPropertySet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6AD181780AC00D03450 /* TmxPropertySet.cpp */; };
+		1443A6C9181780AC00D03450 /* TmxTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6AF181780AC00D03450 /* TmxTile.cpp */; };
+		1443A6CA181780AC00D03450 /* TmxTileset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6B1181780AC00D03450 /* TmxTileset.cpp */; };
+		1443A6CB181780AC00D03450 /* TmxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6B3181780AC00D03450 /* TmxUtil.cpp */; };
+		1443A6CC181780AC00D03450 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6B6181780AC00D03450 /* base64.cpp */; };
+		1443A6E01817836600D03450 /* TmxMapSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1443A6DE1817836600D03450 /* TmxMapSprite.cpp */; };
 		2A03300D165D1D2100E9CD70 /* unitTesting.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A03300B165D1D2100E9CD70 /* unitTesting.cc */; };
 		2A033011165D1D4100E9CD70 /* platformFileIoTests.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A033010165D1D4100E9CD70 /* platformFileIoTests.cc */; };
 		2A25739016A48DAC00363C6F /* ParticlePlayer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2A25738E16A48DAC00363C6F /* ParticlePlayer.cc */; };
@@ -34,6 +49,7 @@
 		2AF1C54016B439BB00C1CF3A /* declaredAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53C16B439BB00C1CF3A /* declaredAssets.cc */; };
 		2AF1C54116B439BB00C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53E16B439BB00C1CF3A /* referencedAssets.cc */; };
 		2AF3633916A9BBE0004ED7AA /* ParticleSystem.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */; };
+		820090791817A8F3006DB357 /* TmxMapAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 820090761817A8F3006DB357 /* TmxMapAsset.cc */; };
 		86063A251654180000362D83 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86063A241654180000362D83 /* platformOSX.mm */; };
 		8609FE2F16556DD2004662ED /* osxSemaphore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE2E16556DD2004662ED /* osxSemaphore.mm */; };
 		8609FE3116556E5A004662ED /* osxThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE3016556E5A004662ED /* osxThread.mm */; };
@@ -450,6 +466,40 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1443A698181780AC00D03450 /* Tmx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tmx.h; sourceTree = "<group>"; };
+		1443A699181780AC00D03450 /* TmxEllipse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxEllipse.cpp; sourceTree = "<group>"; };
+		1443A69A181780AC00D03450 /* TmxEllipse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxEllipse.h; sourceTree = "<group>"; };
+		1443A69B181780AC00D03450 /* TmxImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxImage.cpp; sourceTree = "<group>"; };
+		1443A69C181780AC00D03450 /* TmxImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxImage.h; sourceTree = "<group>"; };
+		1443A69D181780AC00D03450 /* TmxImageLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxImageLayer.cpp; sourceTree = "<group>"; };
+		1443A69E181780AC00D03450 /* TmxImageLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxImageLayer.h; sourceTree = "<group>"; };
+		1443A69F181780AC00D03450 /* TmxLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxLayer.cpp; sourceTree = "<group>"; };
+		1443A6A0181780AC00D03450 /* TmxLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxLayer.h; sourceTree = "<group>"; };
+		1443A6A1181780AC00D03450 /* TmxMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxMap.cpp; sourceTree = "<group>"; };
+		1443A6A2181780AC00D03450 /* TmxMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMap.h; sourceTree = "<group>"; };
+		1443A6A3181780AC00D03450 /* TmxMapTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMapTile.h; sourceTree = "<group>"; };
+		1443A6A4181780AC00D03450 /* TmxObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxObject.cpp; sourceTree = "<group>"; };
+		1443A6A5181780AC00D03450 /* TmxObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxObject.h; sourceTree = "<group>"; };
+		1443A6A6181780AC00D03450 /* TmxObjectGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxObjectGroup.cpp; sourceTree = "<group>"; };
+		1443A6A7181780AC00D03450 /* TmxObjectGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxObjectGroup.h; sourceTree = "<group>"; };
+		1443A6A8181780AC00D03450 /* TmxPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxPoint.h; sourceTree = "<group>"; };
+		1443A6A9181780AC00D03450 /* TmxPolygon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxPolygon.cpp; sourceTree = "<group>"; };
+		1443A6AA181780AC00D03450 /* TmxPolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxPolygon.h; sourceTree = "<group>"; };
+		1443A6AB181780AC00D03450 /* TmxPolyline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxPolyline.cpp; sourceTree = "<group>"; };
+		1443A6AC181780AC00D03450 /* TmxPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxPolyline.h; sourceTree = "<group>"; };
+		1443A6AD181780AC00D03450 /* TmxPropertySet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxPropertySet.cpp; sourceTree = "<group>"; };
+		1443A6AE181780AC00D03450 /* TmxPropertySet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxPropertySet.h; sourceTree = "<group>"; };
+		1443A6AF181780AC00D03450 /* TmxTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxTile.cpp; sourceTree = "<group>"; };
+		1443A6B0181780AC00D03450 /* TmxTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxTile.h; sourceTree = "<group>"; };
+		1443A6B1181780AC00D03450 /* TmxTileset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxTileset.cpp; sourceTree = "<group>"; };
+		1443A6B2181780AC00D03450 /* TmxTileset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxTileset.h; sourceTree = "<group>"; };
+		1443A6B3181780AC00D03450 /* TmxUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxUtil.cpp; sourceTree = "<group>"; };
+		1443A6B4181780AC00D03450 /* TmxUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxUtil.h; sourceTree = "<group>"; };
+		1443A6B6181780AC00D03450 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
+		1443A6B7181780AC00D03450 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+		1443A6DD1817836600D03450 /* TmxMapSprite_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMapSprite_ScriptBinding.h; sourceTree = "<group>"; };
+		1443A6DE1817836600D03450 /* TmxMapSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxMapSprite.cpp; sourceTree = "<group>"; };
+		1443A6DF1817836600D03450 /* TmxMapSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMapSprite.h; sourceTree = "<group>"; };
 		2A03300B165D1D2100E9CD70 /* unitTesting.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unitTesting.cc; path = ../../../source/testing/unitTesting.cc; sourceTree = "<group>"; };
 		2A03300C165D1D2100E9CD70 /* unitTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unitTesting.h; path = ../../../source/testing/unitTesting.h; sourceTree = "<group>"; };
 		2A033010165D1D4100E9CD70 /* platformFileIoTests.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = platformFileIoTests.cc; path = ../../../source/testing/tests/platformFileIoTests.cc; sourceTree = "<group>"; };
@@ -516,6 +566,9 @@
 		2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cc; sourceTree = "<group>"; };
 		2AF3633816A9BBE0004ED7AA /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetEmitter_ScriptBinding.h; sourceTree = "<group>"; };
+		820090751817A8F3006DB357 /* TmxMapAsset_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMapAsset_ScriptBinding.h; sourceTree = "<group>"; };
+		820090761817A8F3006DB357 /* TmxMapAsset.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TmxMapAsset.cc; sourceTree = "<group>"; };
+		820090771817A8F3006DB357 /* TmxMapAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TmxMapAsset.h; sourceTree = "<group>"; };
 		86063A231654180000362D83 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
 		86063A241654180000362D83 /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
 		8609FE2E16556DD2004662ED /* osxSemaphore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxSemaphore.mm; sourceTree = "<group>"; };
@@ -1357,6 +1410,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1443A697181780AB00D03450 /* TmxParser */ = {
+			isa = PBXGroup;
+			children = (
+				1443A698181780AC00D03450 /* Tmx.h */,
+				1443A699181780AC00D03450 /* TmxEllipse.cpp */,
+				1443A69A181780AC00D03450 /* TmxEllipse.h */,
+				1443A69B181780AC00D03450 /* TmxImage.cpp */,
+				1443A69C181780AC00D03450 /* TmxImage.h */,
+				1443A69D181780AC00D03450 /* TmxImageLayer.cpp */,
+				1443A69E181780AC00D03450 /* TmxImageLayer.h */,
+				1443A69F181780AC00D03450 /* TmxLayer.cpp */,
+				1443A6A0181780AC00D03450 /* TmxLayer.h */,
+				1443A6A1181780AC00D03450 /* TmxMap.cpp */,
+				1443A6A2181780AC00D03450 /* TmxMap.h */,
+				1443A6A3181780AC00D03450 /* TmxMapTile.h */,
+				1443A6A4181780AC00D03450 /* TmxObject.cpp */,
+				1443A6A5181780AC00D03450 /* TmxObject.h */,
+				1443A6A6181780AC00D03450 /* TmxObjectGroup.cpp */,
+				1443A6A7181780AC00D03450 /* TmxObjectGroup.h */,
+				1443A6A8181780AC00D03450 /* TmxPoint.h */,
+				1443A6A9181780AC00D03450 /* TmxPolygon.cpp */,
+				1443A6AA181780AC00D03450 /* TmxPolygon.h */,
+				1443A6AB181780AC00D03450 /* TmxPolyline.cpp */,
+				1443A6AC181780AC00D03450 /* TmxPolyline.h */,
+				1443A6AD181780AC00D03450 /* TmxPropertySet.cpp */,
+				1443A6AE181780AC00D03450 /* TmxPropertySet.h */,
+				1443A6AF181780AC00D03450 /* TmxTile.cpp */,
+				1443A6B0181780AC00D03450 /* TmxTile.h */,
+				1443A6B1181780AC00D03450 /* TmxTileset.cpp */,
+				1443A6B2181780AC00D03450 /* TmxTileset.h */,
+				1443A6B3181780AC00D03450 /* TmxUtil.cpp */,
+				1443A6B4181780AC00D03450 /* TmxUtil.h */,
+				1443A6B5181780AC00D03450 /* base64 */,
+			);
+			name = TmxParser;
+			path = ../../lib/TmxParser;
+			sourceTree = "<group>";
+		};
+		1443A6B5181780AC00D03450 /* base64 */ = {
+			isa = PBXGroup;
+			children = (
+				1443A6B6181780AC00D03450 /* base64.cpp */,
+				1443A6B7181780AC00D03450 /* base64.h */,
+			);
+			path = base64;
+			sourceTree = "<group>";
+		};
 		2A033005165D1CB100E9CD70 /* testing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1452,6 +1552,7 @@
 		865A21E71651875E00527C44 /* Support_Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1443A697181780AB00D03450 /* TmxParser */,
 				865A22D6165187D700527C44 /* lpng */,
 				865A22D5165187D100527C44 /* ljpeg */,
 				865A21E8165187B600527C44 /* box2d */,
@@ -1838,6 +1939,9 @@
 		86BC7E7616518D4600D96ADF /* assets */ = {
 			isa = PBXGroup;
 			children = (
+				820090751817A8F3006DB357 /* TmxMapAsset_ScriptBinding.h */,
+				820090761817A8F3006DB357 /* TmxMapAsset.cc */,
+				820090771817A8F3006DB357 /* TmxMapAsset.h */,
 				2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */,
 				2AE5B54016A6D860006908D5 /* ParticleAssetFieldCollection.cc */,
 				2AE5B54116A6D860006908D5 /* ParticleAssetFieldCollection.h */,
@@ -1941,6 +2045,9 @@
 		86BC7EB716518D4600D96ADF /* sceneobject */ = {
 			isa = PBXGroup;
 			children = (
+				1443A6DD1817836600D03450 /* TmxMapSprite_ScriptBinding.h */,
+				1443A6DE1817836600D03450 /* TmxMapSprite.cpp */,
+				1443A6DF1817836600D03450 /* TmxMapSprite.h */,
 				2AA6865A16D69943003CEF0A /* SceneObjectList.cc */,
 				2AA6865B16D69943003CEF0A /* SceneObjectList.h */,
 				2AA6865C16D69943003CEF0A /* SceneObjectSet_ScriptBinding.h */,
@@ -3296,6 +3403,22 @@
 				2AE2938516EF4C220015E200 /* WaveComposite.cc in Sources */,
 				2AA3655916F3552200E7A900 /* ImageFrameProvider.cc in Sources */,
 				2AA3655A16F3552200E7A900 /* ImageFrameProviderCore.cc in Sources */,
+				1443A6BF181780AC00D03450 /* TmxEllipse.cpp in Sources */,
+				1443A6C0181780AC00D03450 /* TmxImage.cpp in Sources */,
+				1443A6C1181780AC00D03450 /* TmxImageLayer.cpp in Sources */,
+				1443A6C2181780AC00D03450 /* TmxLayer.cpp in Sources */,
+				1443A6C3181780AC00D03450 /* TmxMap.cpp in Sources */,
+				1443A6C4181780AC00D03450 /* TmxObject.cpp in Sources */,
+				1443A6C5181780AC00D03450 /* TmxObjectGroup.cpp in Sources */,
+				1443A6C6181780AC00D03450 /* TmxPolygon.cpp in Sources */,
+				1443A6C7181780AC00D03450 /* TmxPolyline.cpp in Sources */,
+				1443A6C8181780AC00D03450 /* TmxPropertySet.cpp in Sources */,
+				1443A6C9181780AC00D03450 /* TmxTile.cpp in Sources */,
+				1443A6CA181780AC00D03450 /* TmxTileset.cpp in Sources */,
+				1443A6CB181780AC00D03450 /* TmxUtil.cpp in Sources */,
+				1443A6CC181780AC00D03450 /* base64.cpp in Sources */,
+				1443A6E01817836600D03450 /* TmxMapSprite.cpp in Sources */,
+				820090791817A8F3006DB357 /* TmxMapAsset.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3358,6 +3481,7 @@
 					../../lib/lpng,
 					../../lib/ljpeg,
 					../../lib/lungif,
+					../../lib/TmxParser,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 					../../source/testing/googleTest,
@@ -3454,6 +3578,7 @@
 					../../lib/lpng,
 					../../lib/ljpeg,
 					../../lib/lungif,
+					../../lib/TmxParser,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 					../../source/testing/googleTest,
@@ -3487,6 +3612,7 @@
 					../../lib/lpng,
 					../../lib/ljpeg,
 					../../lib/lungif,
+					../../lib/TmxParser,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 					../../source/testing/googleTest,

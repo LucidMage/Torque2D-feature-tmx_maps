@@ -30,7 +30,8 @@ ConsoleMethod(TmxMapSprite, WorldCoordToTile, const char*, 3,3,"Convert a world 
 	Vector2 worldPoint(argv[2]);
 	auto localPoint = object->getLocalPoint(worldPoint);
 
-	auto tilePoint = object->CoordToTile(localPoint, object->getTileSize(), object->isIsoMap());
+    auto tileSize = object->getTileSize();
+	auto tilePoint = object->CoordToTile(localPoint, tileSize, object->isIsoMap());
 	return tilePoint.scriptThis();
 }
 

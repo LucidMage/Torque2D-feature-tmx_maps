@@ -300,6 +300,7 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         DownImage = "Sandbox:minusButtonDown";
         InactiveImage = "Sandbox:minusButtonInactive";
     };
+    TamlWrite(%spinnerDown, "spinnerDown.taml");
 
     %controlPosition = (getWord(Sandbox.spinnerExtent, 0) + 1) SPC Sandbox.customLabelSpacing;
 
@@ -352,6 +353,7 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         DownImage = "Sandbox:plusButtonDown";
         InactiveImage = "Sandbox:plusButtonInactive";
     };
+    TamlWrite(%spinnerUp, "spinnerUp.taml");
 
     %textEdit.validate = %textEdit @ ".updateToy();";
     %spinnerDown.target = %textEdit;

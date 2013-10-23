@@ -59,12 +59,12 @@ void TmxMapSprite::OnRegisterScene(Scene* pScene)
 	auto layerIdx = mLayers.begin();
 	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
 	{
-
 		pScene->addToScene(*layerIdx);
 	}
 
 	auto objectsIdx = mObjects.begin();
-	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
+	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx)
+	{
 		pScene->addToScene(*objectsIdx);
 	}
 
@@ -73,15 +73,15 @@ void TmxMapSprite::OnRegisterScene(Scene* pScene)
 void TmxMapSprite::OnUnregisterScene( Scene* pScene )
 {
 	Parent::OnUnregisterScene(pScene);
-	
+
 	auto layerIdx = mLayers.begin();
 	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
 	{
 		pScene->removeFromScene(*layerIdx);
 	}
-
 	auto objectsIdx = mObjects.begin();
-	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
+	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx)
+	{
 		pScene->removeFromScene(*objectsIdx);
 	}
 }
@@ -200,13 +200,17 @@ void TmxMapSprite::BuildMap()
 				F32 heightOffset = ((spriteHeight - tileHeight) / 2) - (height / 2) - (tileHeight / 2);
 				F32 widthOffset = ((spriteWidth - tileWidth) / 2) - (width / 2) + (tileWidth / 2);
 
-
-				Vector2 pos = TileToCoord( 
-					Vector2
+                Vector2 tilePos = Vector2
+                (
+                 static_cast<const F32>(x),
+                 static_cast<const F32>(yTiles-y)
+                 );
+				Vector2 pos = TileToCoord( tilePos
+					/*Vector2
 						(
 							static_cast<const F32>(x),
 							static_cast<const F32>(yTiles-y)	
-						),
+						)*/,
 					tileSize,
 					originSize,
 					orient == Tmx::TMX_MO_ISOMETRIC
@@ -248,11 +252,12 @@ void TmxMapSprite::BuildMap()
 					
 					//	SRG - Changes
 					SceneObject* newObj = new SceneObject();
-					
+
 					Vector2 size = Vector2(spriteWidth * mMapPixelToMeterFactor, spriteHeight * mMapPixelToMeterFactor);
 					S32 sceneLayer = assetLayerData.mSceneLayer;
 
 					std::string layerName = layer->GetName().c_str();
+
 					//	Convert to lower case
 					for (int i = 0; i < layerName.length(); i++)
 						layerName[i] = tolower(layerName[i]);
@@ -330,16 +335,20 @@ void TmxMapSprite::BuildMap()
 				//it is!
 				//try to add some physics bodies...
 
-				if (object->GetPolyline() != nullptr){
+				if (object->GetPolyline() != nullptr)
+				{
 					addPhysicsPolyLine(object, compSprite);
 				}
-				else if (object->GetPolygon() != nullptr){
+				else if (object->GetPolygon() != nullptr)
+				{
 					addPhysicsPolygon(object, compSprite);
 				}
-				else if (object->GetEllipse() != nullptr){
+				else if (object->GetEllipse() != nullptr)
+				{
 					addPhysicsEllipse(object, compSprite, triggerName);
 				}
-				else{
+				else
+				{
 					//must be a rectangle. 
 					addPhysicsRectangle(object, compSprite, triggerName);
 				}
@@ -384,12 +393,17 @@ void TmxMapSprite::addObjectAsSprite(const Tmx::Tileset* tileSet, Tmx::Object* o
 	Vector2 originSize(originX, originY);
 	Tmx::MapOrientation orient = mapParser->GetOrientation();
 
-	Vector2 vTile = CoordToTile( 
-		Vector2
+    Vector2 tilePos = Vector2
+    (
+     static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)),
+     static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
+     );
+	Vector2 vTile = CoordToTile( tilePos
+		/*Vector2
 				(
 					static_cast<F32>(object->GetX() - (width / 2) + (tileWidth / 2)), 
 					static_cast<F32>(object->GetY() + (height / 2) + (tileHeight / 2))
-				),
+				)*/,
 		tileSize,
 		orient == Tmx::TMX_MO_ISOMETRIC
 		);
@@ -429,8 +443,8 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 
 	const Tmx::Polyline* line = object->GetPolyline();
 	int points = line->GetNumPoints();
-	for (int i = 0; i < points-1; i++){
-
+	for (int i = 0; i < points-1; i++)
+	{
 		Tmx::Point first = line->GetPoint(i);
 		Tmx::Point second = line->GetPoint(i+1);
 		Vector2 lineOrigin = Vector2
@@ -440,9 +454,13 @@ void TmxMapSprite::addPhysicsPolyLine(Tmx::Object* object, CompositeSprite* comp
 			);
 
 		//weird additions and subtractions in this area due to the fact that this engine uses bottom->left as origin, and TMX uses top->right. 
-		//it's hacky, but it works. 
-		Vector2 firstPoint = CoordToTile(Vector2( first.x + lineOrigin.x, height-(lineOrigin.y+first.y)),tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
-		Vector2 secondPoint = CoordToTile(Vector2( second.x + lineOrigin.x, height-(lineOrigin.y+second.y)),tileSize,orient == Tmx::TMX_MO_ISOMETRIC);		
+		//it's hacky, but it works.
+        Vector2 firstP = Vector2( first.x + lineOrigin.x, height-(lineOrigin.y+first.y));
+		Vector2 firstPoint = CoordToTile(firstP/*Vector2( first.x + lineOrigin.x, height-(lineOrigin.y+first.y))*/,tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
+        
+        Vector2 secondP = Vector2( second.x + lineOrigin.x, height-(lineOrigin.y+second.y));
+		Vector2 secondPoint = CoordToTile(secondP/*Vector2( second.x + lineOrigin.x, height-(lineOrigin.y+second.y))*/,tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
+        
 		firstPoint += Vector2(-tileWidth/2,tileHeight/2);
 		secondPoint += Vector2(-tileWidth/2,tileHeight/2);
 
@@ -475,7 +493,8 @@ void TmxMapSprite::addPhysicsPolygon(Tmx::Object* object, CompositeSprite* compS
 
 		//weird additions and subtractions in this area due to the fact that this engine uses bottom->left as origin, and TMX uses top->right. 
 		//it's hacky, but it works.
-		Vector2 tilecoord = CoordToTile(Vector2( tmxPoint.x + origin.x, height-(origin.y+tmxPoint.y)),tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
+        Vector2 coord = Vector2( tmxPoint.x + origin.x, height-(origin.y+tmxPoint.y));
+		Vector2 tilecoord = CoordToTile(coord/*Vector2( tmxPoint.x + origin.x, height-(origin.y+tmxPoint.y))*/,tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint *= mMapPixelToMeterFactor;
@@ -518,11 +537,12 @@ void TmxMapSprite::addPhysicsEllipse(Tmx::Object* object, CompositeSprite* compS
 
 		//weird additions and subtractions in this area due to the fact that this engine uses bottom->left as origin, and TMX uses top->right. 
 		//it's hacky, but it works.
-		Vector2 tilecoord = CoordToTile(Vector2( origin.x, mapHeight-(origin.y)),tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
+    Vector2 coord = Vector2( origin.x, mapHeight-(origin.y));
+		Vector2 tilecoord = CoordToTile(coord/*Vector2( origin.x, mapHeight-(origin.y))*/,tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint *= mMapPixelToMeterFactor;
-		
+
 		//	SRG Changes
 		if (triggerName != "")
 		{
@@ -568,7 +588,8 @@ void TmxMapSprite::addPhysicsRectangle(Tmx::Object* object, CompositeSprite* com
 
 		//weird additions and subtractions in this area due to the fact that this engine uses bottom->left as origin, and TMX uses top->right. 
 		//it's hacky, but it works.
-		Vector2 tilecoord = CoordToTile(Vector2( origin.x, mapHeight-(origin.y)),tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
+    Vector2 coord = Vector2( origin.x, mapHeight-(origin.y));
+		Vector2 tilecoord = CoordToTile(coord/*Vector2( origin.x, mapHeight-(origin.y))*/,tileSize,orient == Tmx::TMX_MO_ISOMETRIC);
 		b2Vec2 nativePoint = tilecoord;
 		nativePoint += b2Vec2(-tileWidth/2,tileHeight/2);
 		nativePoint += b2Vec2(object->GetWidth()/2.0f, -(object->GetHeight()/2.0f)); //adjust for tmx defining from bottom left point while t2d defines from center...
@@ -816,12 +837,12 @@ void TmxMapSprite::setBodyType(const b2BodyType type)
 	auto layerIdx = mLayers.begin();
 	for(layerIdx; layerIdx != mLayers.end(); ++layerIdx)
 	{
-
 		(*layerIdx)->setBodyType(type);
 	}
 
 	auto objectsIdx = mObjects.begin();
-	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx){
+	for (objectsIdx; objectsIdx != mObjects.end(); ++objectsIdx)
+	{
 		(*objectsIdx)->setBodyType(type);
 	}
 }
